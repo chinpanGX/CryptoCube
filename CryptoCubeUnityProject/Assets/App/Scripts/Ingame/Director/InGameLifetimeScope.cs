@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using App.InGame.Player;
+using App.InGame.Prop;
 using AppCore.Runtime;
 using UnityEngine;
 using VContainer;
@@ -14,10 +15,12 @@ namespace App.InGame.HUD
         [SerializeField] private HackingTaskView hackingTaskView;
         [SerializeField] private InGameHudView inGameHudView;
         [SerializeField] private ShieldWallDirector shieldWallDirector;
+        [SerializeField] private GoalTrigger goalTrigger;
         
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterMessagePipe();
+            builder.RegisterComponent(goalTrigger);
             builder.RegisterComponent(playerController);
             builder.RegisterComponent(hackingTaskView);
             builder.RegisterComponent(inGameHudView);

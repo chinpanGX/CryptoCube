@@ -1,10 +1,5 @@
-﻿using App.InGame.Message;
-using AppCore.Runtime;
-using Cysharp.Threading.Tasks;
-using MessagePipe;
+﻿using AppCore.Runtime;
 using R3;
-using UnityEditor;
-using UnityEngine.UI;
 using VContainer;
 
 namespace App.InGame.HUD
@@ -89,7 +84,7 @@ namespace App.InGame.HUD
         {
             if (!passwordCorrect) return;
 
-            HackingTaskView.Close();
+            HackingTaskView.Hide();
             Model.UnlockSuccess();
         }
 
