@@ -1,0 +1,25 @@
+{
+    "name": "App.InGame.Director",
+    "rootNamespace": "App.InGame.Director",
+    "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:4f682e06dbb3e624faedad9cc27106cc",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:54a2c7e87b2e33c4682fe98c62bb2fe5",
+        "GUID:a84f5d3464fa16748b6217d05b3067ea",
+        "GUID:34477041819e37345a3b97ac45ce0c55",
+        "GUID:91f7c9a5e19db074aa84343c637371f7",
+        "GUID:77fa84171dfb5ee49be7aa3cc12f1cbd"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

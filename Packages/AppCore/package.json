@@ -1,0 +1,6 @@
+﻿{
+  "name": "appcore",
+  "displayName": "AppCore",
+  "version": "1.0.0",
+  "description": "UnityEngineに依存しないCoreパッケージ"
+}

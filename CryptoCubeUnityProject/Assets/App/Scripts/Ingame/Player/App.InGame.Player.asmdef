@@ -1,0 +1,21 @@
+{
+    "name": "App.InGame.Player",
+    "rootNamespace": "App.InGame.Player",
+    "references": [
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:91f7c9a5e19db074aa84343c637371f7",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
