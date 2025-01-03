@@ -1,18 +1,18 @@
 {
-    "name": "App.AppServiceExtensions",
-    "rootNamespace": "App.AppServiceExtensions",
-    "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:7734ae3a0c04fe54b9f2255531b33440",
-        "GUID:cb63c1fc9fe0b5f4981fa4204c07923e"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "App.AppServiceExtensions",
+  "rootNamespace": "App.AppServiceExtensions",
+  "references": [
+    "GUID:f51ebe6a0ceec4240a699833d6309b23",
+    "GUID:7734ae3a0c04fe54b9f2255531b33440",
+    "GUID:cb63c1fc9fe0b5f4981fa4204c07923e"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

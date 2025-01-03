@@ -1,11 +1,10 @@
-﻿using System.Threading;
-using App.InGame.Player;
+﻿using App.InGame.Player;
 using App.InGame.Prop;
 using AppCore.Runtime;
+using MessagePipe;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using MessagePipe;
 
 namespace App.InGame.HUD
 {
@@ -16,7 +15,7 @@ namespace App.InGame.HUD
         [SerializeField] private InGameHudView inGameHudView;
         [SerializeField] private ShieldWallDirector shieldWallDirector;
         [SerializeField] private GoalTrigger goalTrigger;
-        
+
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterMessagePipe();
@@ -42,16 +41,6 @@ namespace App.InGame.HUD
                 this.lifetimeScope = lifetimeScope;
                 this.updatablePresenter = updatablePresenter;
             }
-            
-            public void Start()
-            { 
-                Push("InGame");   
-            }
-            
-            public void Tick()
-            {
-                updatablePresenter.Execute();
-            }
 
             public void Push(string name)
             {
@@ -62,6 +51,16 @@ namespace App.InGame.HUD
                         updatablePresenter.SetRequest(request);
                         break;
                 }
+            }
+
+            public void Start()
+            {
+                Push("InGame");
+            }
+
+            public void Tick()
+            {
+                updatablePresenter.Execute();
             }
         }
     }

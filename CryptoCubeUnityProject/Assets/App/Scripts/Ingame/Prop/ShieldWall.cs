@@ -1,5 +1,5 @@
-using MessagePipe;
 using App.InGame.Message;
+using MessagePipe;
 using R3;
 using R3.Triggers;
 using UnityEngine;

@@ -6,14 +6,11 @@ namespace App.InGame.HUD
 {
     public class HackingPresenter : IPresenter
     {
-        private IDirector Director { get; set; }
-        private InGameHudView InGameHudView { get; set; }
-        private HackingTaskView HackingTaskView { get; set; }
-        private HackingTaskModel Model { get; set; }
         private readonly CancellationDisposable cancellationDisposable;
 
         [Inject]
-        public HackingPresenter(IDirector director, HackingTaskModel model, InGameHudView inGameHudView, HackingTaskView hackingTaskView)
+        public HackingPresenter(IDirector director, HackingTaskModel model, InGameHudView inGameHudView,
+            HackingTaskView hackingTaskView)
         {
             Director = director;
             Model = model;
@@ -22,6 +19,10 @@ namespace App.InGame.HUD
             cancellationDisposable = new CancellationDisposable();
             Setup();
         }
+        private IDirector Director { get; set; }
+        private InGameHudView InGameHudView { get; set; }
+        private HackingTaskView HackingTaskView { get; set; }
+        private HackingTaskModel Model { get; set; }
 
         public void Execute()
         {
@@ -44,14 +45,14 @@ namespace App.InGame.HUD
         {
             HackingTaskView.Push();
             HackingTaskView.Hide();
-            
+
             InGameHudView.Push();
             InGameHudView.Hide();
 
             Model.HackingRemainTime
                 .Subscribe(InGameHudView.SetRemainingTimeText)
                 .RegisterTo(cancellationDisposable.Token);
-            
+
             Model.StartHacking
                 .Subscribe(StartHacking)
                 .RegisterTo(cancellationDisposable.Token);
@@ -64,11 +65,11 @@ namespace App.InGame.HUD
             Model.CheckPassword
                 .Subscribe(CheckPassword)
                 .RegisterTo(cancellationDisposable.Token);
-            
+
             HackingTaskView.Request
                 .Subscribe(text => Model.RequestPassword(text))
                 .RegisterTo(cancellationDisposable.Token);
-            
+
             Model.Setup();
             HackingTaskView.Setup();
             InGameHudView.Open();
@@ -77,9 +78,9 @@ namespace App.InGame.HUD
         private void StartHacking(string passwordAnswer)
         {
             HackingTaskView.PreOpenSetup(passwordAnswer);
-            HackingTaskView.Open();   
+            HackingTaskView.Open();
         }
-        
+
         private void CheckPassword(bool passwordCorrect)
         {
             if (!passwordCorrect) return;

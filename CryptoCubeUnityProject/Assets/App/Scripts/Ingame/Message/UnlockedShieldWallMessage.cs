@@ -3,7 +3,7 @@
     public struct UnlockedShieldWallMessage
     {
         public readonly int ShieldWallId;
-        
+
         public UnlockedShieldWallMessage(int shieldWallId)
         {
             ShieldWallId = shieldWallId;

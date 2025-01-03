@@ -15,13 +15,19 @@ namespace App.InGame.Player
         [SerializeField] private CharacterController characterController;
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private float speed = 5.0f;
-        private Vector3 direction;
-        private InputAction moveAction;
-        
-        private ISubscriber<PlayerControlPermissionMessage> playerControlPermissionSubscriber;
 
         private bool canControl;
-        
+        private Vector3 direction;
+        private InputAction moveAction;
+
+        private ISubscriber<PlayerControlPermissionMessage> playerControlPermissionSubscriber;
+
+        public void Dispose()
+        {
+            moveAction.performed -= DoMove;
+            moveAction.canceled -= CancelMove;
+        }
+
         [Inject]
         public void Construct(ISubscriber<PlayerControlPermissionMessage> subscriber)
         {
@@ -30,7 +36,7 @@ namespace App.InGame.Player
             moveAction = playerInput.actions["Move"];
             moveAction.performed += DoMove;
             moveAction.canceled += CancelMove;
-            
+
             this.UpdateAsObservable()
                 .Where(_ => canControl)
                 .Subscribe(_ => Tick())
@@ -40,13 +46,7 @@ namespace App.InGame.Player
                 .Subscribe(message => { canControl = message.CanControl; })
                 .RegisterTo(destroyCancellationToken);
         }
-        
-        public void Dispose()
-        {
-            moveAction.performed -= DoMove;
-            moveAction.canceled -= CancelMove;
-        }
-        
+
         private void Tick()
         {
             characterController.Move(direction * (speed * Time.deltaTime));

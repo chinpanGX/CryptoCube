@@ -3,7 +3,7 @@
     public struct OnTriggerEnterWithShieldWallMessage
     {
         public readonly int ShieldWallId;
-        
+
         public OnTriggerEnterWithShieldWallMessage(int shieldWallId)
         {
             ShieldWallId = shieldWallId;

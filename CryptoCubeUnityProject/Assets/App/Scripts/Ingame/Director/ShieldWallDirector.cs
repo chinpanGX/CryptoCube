@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using App.InGame.Message;
 using App.InGame.Prop;
 using MessagePipe;
@@ -13,7 +12,7 @@ namespace App.InGame.HUD
         [SerializeField] private List<ShieldWall> shieldWalls;
 
         private readonly Dictionary<int, ShieldWall> shieldWallDictionary = new();
-        
+
         [Inject]
         public void Construct(
             IPublisher<OnTriggerEnterWithShieldWallMessage> onTriggerEnterWithShieldWallPublisher,
@@ -26,14 +25,15 @@ namespace App.InGame.HUD
                 shieldWall.Construct(onTriggerEnterWithShieldWallPublisher);
                 shieldWallDictionary[shieldWall.Id] = shieldWall;
             }
-            
+
             unlockedShieldWallSubscriber.Subscribe(message =>
-            {
-                if (shieldWallDictionary.TryGetValue(message.ShieldWallId, out var shieldWall))
                 {
-                    shieldWall.Unlock();
+                    if (shieldWallDictionary.TryGetValue(message.ShieldWallId, out var shieldWall))
+                    {
+                        shieldWall.Unlock();
+                    }
                 }
-            });
+            );
         }
     }
 }

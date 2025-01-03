@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using AssetLoader.Application;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Object = UnityEngine.Object;
 
 namespace AssetLoader.Infrastructure
 {
@@ -27,14 +28,14 @@ namespace AssetLoader.Infrastructure
             cache.Add(assetName, handle.Result);
             return handle.Result;
         }
-        
+
         public void Dispose()
         {
             cache.Clear();
         }
     }
 
-    class AssetCache
+    internal class AssetCache
     {
         private readonly Dictionary<string, Object> cache = new();
 
@@ -53,14 +54,14 @@ namespace AssetLoader.Infrastructure
         {
             cache[assetName] = asset;
         }
-        
+
         public void Clear()
         {
             cache.Clear();
         }
     }
 
-    public class AssetLoadException : System.Exception
+    public class AssetLoadException : Exception
     {
         public AssetLoadException(string message) : base(message)
         {

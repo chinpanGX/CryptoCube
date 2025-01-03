@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Codice.CM.Common;
 
 namespace AppCore.Runtime
 {
@@ -11,21 +10,21 @@ namespace AppCore.Runtime
 
         private readonly T owner;
         private IState? request;
-        private IState? Current { get; set; }
 
         public StateMachine(T owner)
         {
             this.owner = owner;
         }
-        
+        private IState? Current { get; set; }
+
         public void Dispose()
         {
             if (Current != null)
             {
                 Current.End(owner);
-                Free(Current);   
+                Free(Current);
             }
-            
+
             Current = null;
 
             foreach (var state in cache)
@@ -34,12 +33,12 @@ namespace AppCore.Runtime
             }
             cache.Clear();
         }
-        
+
         public void Change<TState>() where TState : IState, new()
         {
             request = Alloc<TState>();
         }
-        
+
         public void Execute()
         {
             if (request != null)
@@ -58,12 +57,12 @@ namespace AppCore.Runtime
 
             Current?.Execute(owner);
         }
-        
+
         public bool IsState<TState>() where TState : IState
         {
             return Current is TState;
         }
-        
+
         private IState Alloc<TState>() where TState : IState, new()
         {
             foreach (var value in cache)
@@ -75,7 +74,7 @@ namespace AppCore.Runtime
             }
             return new TState();
         }
-        
+
         private void Free<TState>(TState state) where TState : IState
         {
             state.Clear();

@@ -1,16 +1,16 @@
 {
-    "name": "App.InGame.Message",
-    "rootNamespace": "App.InGame.Message",
-    "references": [
-        "GUID:08b38f39e2d9e594389b7a4cf4c2c338"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "App.InGame.Message",
+  "rootNamespace": "App.InGame.Message",
+  "references": [
+    "GUID:08b38f39e2d9e594389b7a4cf4c2c338"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

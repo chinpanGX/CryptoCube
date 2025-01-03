@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace AppService.Runtime
@@ -13,7 +14,7 @@ namespace AppService.Runtime
             }
             return component;
         }
-        
+
         public static T GetComponentSafe<T>(this GameObject gameObject) where T : Component
         {
             var component = gameObject.GetComponent<T>();
@@ -24,9 +25,11 @@ namespace AppService.Runtime
             return component;
         }
     }
-    
-    public class ComponentErrorException : System.Exception
+
+    public class ComponentErrorException : Exception
     {
-        public ComponentErrorException(string message) : base(message) { }
+        public ComponentErrorException(string message) : base(message)
+        {
+        }
     }
 }

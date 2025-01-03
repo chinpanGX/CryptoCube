@@ -8,7 +8,7 @@ namespace AppCore.Runtime
         [SerializeField] private Camera screenCamera;
         private readonly Stack<IView> stack = new(0);
         private int sortingOrder;
-        
+
         public void Push(IView view)
         {
             if (!stack.Contains(view))

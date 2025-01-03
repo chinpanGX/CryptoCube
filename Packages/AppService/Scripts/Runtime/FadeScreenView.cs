@@ -9,9 +9,9 @@ namespace AppService.Runtime
         [SerializeField] private Canvas canvas;
         [SerializeField] private CanvasGroup fadeCanvasGroup;
         [Range(0.1f, 1.0f)] [SerializeField] private float durationSecond;
+        private static ModalScreen ModalScreen => ComponentLocator.Get<ModalScreen>();
         public Canvas Canvas => canvas;
-        static ModalScreen ModalScreen => ComponentLocator.Get<ModalScreen>();
-        
+
         public void Push()
         {
             ModalScreen.Push(this);

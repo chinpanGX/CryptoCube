@@ -10,22 +10,11 @@ namespace App.InGame.HUD
 {
     public class HackingTaskModel : IModel
     {
-        private readonly ReactiveProperty<int> hackingRemainTime = new(60);
-        private readonly Subject<string> startHackingSubject = new();
-        private readonly Subject<bool> checkPasswordSubject = new();
-        private readonly bool pausing = false;
         private readonly CancellationTokenSource cancellationTokenSource = new();
-        private StateMachine<HackingTaskModel> StateMachine { get; }
-        private ISubscriber<OnTriggerEnterWithGoalMessage> OnTriggerEnterWithGoalSubscriber { get; }
-        private ISubscriber<OnTriggerEnterWithShieldWallMessage> OnTriggerEnterWithShieldWallSubscriber { get; }
-        private IPublisher<PlayerControlPermissionMessage> PlayerControlPermissionPublisher { get; }
-        private IPublisher<UnlockedShieldWallMessage> UnlockedShieldWallPublisher { get; }
-
-        private int HackingTargetShieldWallId { get; set; }
-
-        public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
-        public Observable<string> StartHacking => startHackingSubject;
-        public Observable<bool> CheckPassword => checkPasswordSubject;
+        private readonly Subject<bool> checkPasswordSubject = new();
+        private readonly ReactiveProperty<int> hackingRemainTime = new(60);
+        private readonly bool pausing = false;
+        private readonly Subject<string> startHackingSubject = new();
 
         public HackingTaskModel(IPublisher<PlayerControlPermissionMessage> playerControlPermissionPublisher,
             IPublisher<UnlockedShieldWallMessage> unlockedShieldWallPublisher,
@@ -39,6 +28,17 @@ namespace App.InGame.HUD
             StateMachine = new StateMachine<HackingTaskModel>(this);
             StateMachine.Change<StateInit>();
         }
+        private StateMachine<HackingTaskModel> StateMachine { get; }
+        private ISubscriber<OnTriggerEnterWithGoalMessage> OnTriggerEnterWithGoalSubscriber { get; }
+        private ISubscriber<OnTriggerEnterWithShieldWallMessage> OnTriggerEnterWithShieldWallSubscriber { get; }
+        private IPublisher<PlayerControlPermissionMessage> PlayerControlPermissionPublisher { get; }
+        private IPublisher<UnlockedShieldWallMessage> UnlockedShieldWallPublisher { get; }
+
+        private int HackingTargetShieldWallId { get; set; }
+
+        public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
+        public Observable<string> StartHacking => startHackingSubject;
+        public Observable<bool> CheckPassword => checkPasswordSubject;
 
         public void Setup()
         {
@@ -78,10 +78,14 @@ namespace App.InGame.HUD
             while (hackingRemainTime.Value > 0)
             {
                 if (cancellationTokenSource.Token.IsCancellationRequested)
+                {
                     break;
+                }
 
                 if (pausing)
+                {
                     await UniTask.Yield(cancellationTokenSource.Token);
+                }
 
                 await UniTask.Delay(1000, cancellationToken: cancellationTokenSource.Token);
                 hackingRemainTime.Value--;

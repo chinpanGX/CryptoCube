@@ -11,32 +11,32 @@ namespace App.InGame.HUD
 
         private static ViewScreen ViewScreen => ComponentLocator.Get<ViewScreen>();
         public Canvas Canvas => canvas;
-        
+
         public void Push()
         {
             ViewScreen.Push(this);
         }
-        
+
         public void Pop()
         {
             ViewScreen.Pop();
         }
-        
+
         public void Open()
         {
             gameObject.SetActive(true);
         }
-        
+
         public void Close()
         {
             Destroy(gameObject);
         }
-        
+
         public void Hide()
         {
             gameObject.SetActive(false);
         }
-        
+
         public void SetRemainingTimeText(int remainingTime)
         {
             remainingTimeText.SetTextSafe($"{remainingTime}");

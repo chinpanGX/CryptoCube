@@ -11,7 +11,7 @@ namespace AssetLoader.Infrastructure
         {
             await SceneManager.LoadSceneAsync(sceneName, isSingle ? LoadSceneMode.Single : LoadSceneMode.Additive);
         }
-        
+
         public async UniTask UnloadSceneAsync(string sceneName)
         {
             await SceneManager.UnloadSceneAsync(sceneName);
