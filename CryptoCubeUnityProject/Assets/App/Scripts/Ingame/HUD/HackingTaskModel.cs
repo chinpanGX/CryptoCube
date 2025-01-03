@@ -10,16 +10,17 @@ namespace App.InGame.HUD
 {
     public class HackingTaskModel : IModel
     {
-        private readonly ReactiveProperty<int> hackingRemainTime = new(10);
+        private readonly ReactiveProperty<int> hackingRemainTime = new(60);
         private readonly Subject<string> startHackingSubject = new();
         private readonly Subject<bool> checkPasswordSubject = new();
         private readonly bool pausing = false;
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private StateMachine<HackingTaskModel> StateMachine { get; }
-        private IPublisher<PlayerControlPermissionMessage> PlayerControlPermissionPublisher { get; }
+        private ISubscriber<OnTriggerEnterWithGoalMessage> OnTriggerEnterWithGoalSubscriber { get; }
         private ISubscriber<OnTriggerEnterWithShieldWallMessage> OnTriggerEnterWithShieldWallSubscriber { get; }
+        private IPublisher<PlayerControlPermissionMessage> PlayerControlPermissionPublisher { get; }
         private IPublisher<UnlockedShieldWallMessage> UnlockedShieldWallPublisher { get; }
-        
+
         private int HackingTargetShieldWallId { get; set; }
 
         public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
@@ -27,21 +28,23 @@ namespace App.InGame.HUD
         public Observable<bool> CheckPassword => checkPasswordSubject;
 
         public HackingTaskModel(IPublisher<PlayerControlPermissionMessage> playerControlPermissionPublisher,
+            IPublisher<UnlockedShieldWallMessage> unlockedShieldWallPublisher,
             ISubscriber<OnTriggerEnterWithShieldWallMessage> onTriggerEnterWithShieldWallSubscriber,
-            IPublisher<UnlockedShieldWallMessage> unlockedShieldWallPublisher)
+            ISubscriber<OnTriggerEnterWithGoalMessage> onTriggerEnterWithGoalSubscriber)
         {
             PlayerControlPermissionPublisher = playerControlPermissionPublisher;
-            OnTriggerEnterWithShieldWallSubscriber = onTriggerEnterWithShieldWallSubscriber;
             UnlockedShieldWallPublisher = unlockedShieldWallPublisher;
+            OnTriggerEnterWithShieldWallSubscriber = onTriggerEnterWithShieldWallSubscriber;
+            OnTriggerEnterWithGoalSubscriber = onTriggerEnterWithGoalSubscriber;
             StateMachine = new StateMachine<HackingTaskModel>(this);
             StateMachine.Change<StateInit>();
         }
 
         public void Setup()
         {
-               
+
         }
-        
+
         public void Execute()
         {
             StateMachine.Execute();
@@ -52,19 +55,19 @@ namespace App.InGame.HUD
             StateMachine.Dispose();
             cancellationTokenSource.Dispose();
         }
-        
+
         public void ChangeEndState()
         {
             StateMachine.Change<StateEnd>();
         }
-        
+
         public void UnlockSuccess()
         {
             UnlockedShieldWallPublisher.Publish(new UnlockedShieldWallMessage(HackingTargetShieldWallId));
             PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(true));
             StateMachine.Change<StateSearching>();
         }
-        
+
         public void RequestPassword(string password)
         {
             checkPasswordSubject.OnNext(password == "abcd");
@@ -84,7 +87,7 @@ namespace App.InGame.HUD
                 hackingRemainTime.Value--;
             }
         }
-        
+
         private string GetPassword()
         {
             // TODO 衝突した壁のIDをもとにマスタからパスワードを取得する 
@@ -96,7 +99,27 @@ namespace App.InGame.HUD
         {
             public override void Begin(HackingTaskModel owner)
             {
+                owner.OnTriggerEnterWithShieldWallSubscriber
+                    .Subscribe(message => { StartHacking(owner, message.ShieldWallId); })
+                    .RegisterTo(owner.cancellationTokenSource.Token);
+
+                owner.OnTriggerEnterWithGoalSubscriber
+                    .Subscribe(_ => StopCountdown(owner))
+                    .RegisterTo(owner.cancellationTokenSource.Token);
+
                 owner.StateMachine.Change<StatePreStart>();
+            }
+
+            private void StartHacking(HackingTaskModel owner, int shieldWallId)
+            {
+                owner.HackingTargetShieldWallId = shieldWallId;
+                owner.StateMachine.Change<StateHacking>();
+            }
+
+            private void StopCountdown(HackingTaskModel owner)
+            {
+                owner.cancellationTokenSource.Cancel();
+                owner.StateMachine.Change<StateEnd>();
             }
         }
 
@@ -120,14 +143,7 @@ namespace App.InGame.HUD
         {
             public override void Begin(HackingTaskModel owner)
             {
-                owner.OnTriggerEnterWithShieldWallSubscriber
-                    .Subscribe(message =>
-                        {
-                            owner.StateMachine.Change<StateHacking>();
-                            owner.HackingTargetShieldWallId = message.ShieldWallId;
-                        }
-                    )
-                    .RegisterTo(owner.cancellationTokenSource.Token);
+
             }
         }
 
@@ -144,7 +160,6 @@ namespace App.InGame.HUD
         {
             public override void Begin(HackingTaskModel owner)
             {
-                UnityEngine.Debug.Log("End");
                 owner.PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
             }
         }

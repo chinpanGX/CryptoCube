@@ -14,20 +14,18 @@ namespace App.InGame.Prop
 
         [Inject]
         public void Construct(
-            IPublisher<OnTriggerEnterWithShieldWallMessage> onTriggerEnterWithShieldWallPublisher,
-            IPublisher<PlayerControlPermissionMessage> playerControlPermissionPublisher)
+            IPublisher<OnTriggerEnterWithShieldWallMessage> onTriggerEnterWithShieldWallPublisher)
         {
             this.OnTriggerEnterAsObservable()
                 .Where(x => x.gameObject.CompareTag("Player"))
                 .Subscribe(_ =>
                     {
                         onTriggerEnterWithShieldWallPublisher.Publish(new OnTriggerEnterWithShieldWallMessage(id));
-                        playerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
                     }
                 )
                 .RegisterTo(destroyCancellationToken);
         }
-        
+
         public void Unlock()
         {
             Destroy(gameObject);

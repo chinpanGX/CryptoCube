@@ -23,7 +23,7 @@ namespace App.InGame.HUD
             shieldWallDictionary.Clear();
             foreach (var shieldWall in shieldWalls)
             {
-                shieldWall.Construct(onTriggerEnterWithShieldWallPublisher, playerControlPermissionPublisher);
+                shieldWall.Construct(onTriggerEnterWithShieldWallPublisher);
                 shieldWallDictionary[shieldWall.Id] = shieldWall;
             }
             
