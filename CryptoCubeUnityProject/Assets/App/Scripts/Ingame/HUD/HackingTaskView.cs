@@ -1,5 +1,6 @@
 ﻿using AppCore.Runtime;
 using AppService.Runtime;
+using R3;
 using TMPro;
 using UnityEngine;
 
@@ -13,6 +14,15 @@ namespace App.InGame.HUD
 
         private static ViewScreen ViewScreen => ComponentLocator.Get<ViewScreen>();
         public Canvas Canvas => canvas;
+        
+        private readonly Subject<string> request = new();
+        public Observable<string> Request => request;
+
+        public void Setup()
+        {
+            inputField.onSubmit.RemoveAllListeners();
+            inputField.onSubmit.AddListener((text) => request.OnNext(text));
+        }
         
         public void Push()
         {

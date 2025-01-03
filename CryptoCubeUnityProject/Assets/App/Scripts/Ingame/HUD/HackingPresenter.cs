@@ -1,7 +1,10 @@
-﻿using AppCore.Runtime;
+﻿using App.InGame.Message;
+using AppCore.Runtime;
 using Cysharp.Threading.Tasks;
+using MessagePipe;
 using R3;
 using UnityEditor;
+using UnityEngine.UI;
 using VContainer;
 
 namespace App.InGame.HUD
@@ -51,25 +54,43 @@ namespace App.InGame.HUD
             InGameHudView.Hide();
 
             Model.HackingRemainTime
-                .Subscribe(x => InGameHudView.SetRemainingTimeText($"{x}"))
-                .AddTo(cancellationDisposable.Token);
+                .Subscribe(InGameHudView.SetRemainingTimeText)
+                .RegisterTo(cancellationDisposable.Token);
             
             Model.StartHacking
-                .Subscribe(text =>
-                    {
-                        HackingTaskView.PreOpenSetup(text);
-                        HackingTaskView.Open();
-                    }
-                )
-                .AddTo(cancellationDisposable.Token);
+                .Subscribe(StartHacking)
+                .RegisterTo(cancellationDisposable.Token);
 
             Model.HackingRemainTime
                 .Where(x => x == 0)
                 .Subscribe(_ => EndState())
-                .AddTo(cancellationDisposable.Token);
+                .RegisterTo(cancellationDisposable.Token);
+
+            Model.CheckPassword
+                .Subscribe(CheckPassword)
+                .RegisterTo(cancellationDisposable.Token);
+            
+            HackingTaskView.Request
+                .Subscribe(text => Model.RequestPassword(text))
+                .RegisterTo(cancellationDisposable.Token);
             
             Model.Setup();
+            HackingTaskView.Setup();
             InGameHudView.Open();
+        }
+
+        private void StartHacking(string passwordAnswer)
+        {
+            HackingTaskView.PreOpenSetup(passwordAnswer);
+            HackingTaskView.Open();   
+        }
+        
+        private void CheckPassword(bool passwordCorrect)
+        {
+            if (!passwordCorrect) return;
+
+            HackingTaskView.Close();
+            Model.UnlockSuccess();
         }
 
         private void EndState()

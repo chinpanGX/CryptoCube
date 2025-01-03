@@ -37,9 +37,9 @@ namespace App.InGame.HUD
             gameObject.SetActive(false);
         }
         
-        public void SetRemainingTimeText(string text)
+        public void SetRemainingTimeText(int remainingTime)
         {
-            remainingTimeText.SetTextSafe(text);
+            remainingTimeText.SetTextSafe($"{remainingTime}");
         }
     }
 }

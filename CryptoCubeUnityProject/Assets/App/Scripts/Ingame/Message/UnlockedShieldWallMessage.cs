@@ -1,13 +1,12 @@
 ﻿namespace App.InGame.Message
 {
-    public struct OnTriggerEnterWithShieldWallMessage
+    public struct UnlockedShieldWallMessage
     {
         public readonly int ShieldWallId;
         
-        public OnTriggerEnterWithShieldWallMessage(int shieldWallId)
+        public UnlockedShieldWallMessage(int shieldWallId)
         {
             ShieldWallId = shieldWallId;
         }
     }
-
 }

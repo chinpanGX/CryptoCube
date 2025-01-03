@@ -10,6 +10,7 @@ namespace App.InGame.Prop
     public class ShieldWall : MonoBehaviour
     {
         [SerializeField] private int id;
+        public int Id => id;
 
         [Inject]
         public void Construct(
@@ -25,6 +26,11 @@ namespace App.InGame.Prop
                     }
                 )
                 .RegisterTo(destroyCancellationToken);
+        }
+        
+        public void Unlock()
+        {
+            Destroy(gameObject);
         }
     }
 }
