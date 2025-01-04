@@ -1,0 +1,23 @@
+{
+    "name": "App.InGame.Presentation.HUD",
+    "rootNamespace": "App.InGame.Presentation.HUD",
+    "references": [
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:54a2c7e87b2e33c4682fe98c62bb2fe5",
+        "GUID:cb63c1fc9fe0b5f4981fa4204c07923e",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:48108e346aa0ca546b6148c718a8a415"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

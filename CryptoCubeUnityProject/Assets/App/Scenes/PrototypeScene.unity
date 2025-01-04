@@ -1118,7 +1118,7 @@ GameObject:
   - component: {fileID: 1379017854}
   - component: {fileID: 1379017855}
   m_Layer: 0
-  m_Name: InGameDirector
+  m_Name: InGameLifetimeScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1170,12 +1170,12 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   playerController: {fileID: 538932065}
-  hackingTaskView: {fileID: 989546689}
+  hackingGameView: {fileID: 989546689}
   inGameHudView: {fileID: 7545871807040006980}
   goalTrigger: {fileID: 268926675}
   shieldWallDirector: {fileID: 1379017852}
   patrolEnemyDirector: {fileID: 1379017854}
-  characterSpawner: {fileID: 1630995866}
+  characterSpawnerDirector: {fileID: 1379017855}
 --- !u!114 &1379017854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1744,7 +1744,7 @@ PrefabInstance:
       objectReference: {fileID: 1808818651}
     - target: {fileID: 361560804507239214, guid: 4dc88e6e5979de448b6ac7998f1db131, type: 3}
       propertyPath: m_VersionIndex
-      value: 5968
+      value: 5974
       objectReference: {fileID: 0}
     - target: {fileID: 1451846077918952427, guid: 4dc88e6e5979de448b6ac7998f1db131, type: 3}
       propertyPath: m_Mesh
@@ -1764,7 +1764,7 @@ PrefabInstance:
       objectReference: {fileID: 346068394}
     - target: {fileID: 4556233127270159236, guid: 4dc88e6e5979de448b6ac7998f1db131, type: 3}
       propertyPath: m_VersionIndex
-      value: 2217
+      value: 2223
       objectReference: {fileID: 0}
     - target: {fileID: 5835916708931129296, guid: 4dc88e6e5979de448b6ac7998f1db131, type: 3}
       propertyPath: m_Mesh
