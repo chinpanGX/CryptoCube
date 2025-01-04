@@ -1,5 +1,17 @@
-﻿namespace App.InGame.Message
+namespace App.InGame.Message
 {
+    public struct OnTriggerEnterWithGoalMessage
+    {
+    }
+
+    public struct OnTriggerEnterWithPatrolEnemyMessage
+    {
+    }
+    
+    public struct OnTriggerEnterWithCharacterSpawnerMessage
+    {
+    }
+
     public struct OnTriggerEnterWithShieldWallMessage
     {
         public readonly int ShieldWallId;

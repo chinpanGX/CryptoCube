@@ -1,20 +1,24 @@
 {
-  "name": "App.InGame.Prop",
-  "rootNamespace": "App.InGame.Prop",
-  "references": [
-    "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
-    "GUID:f51ebe6a0ceec4240a699833d6309b23",
-    "GUID:77221876cc6b8244180b96e320b1bcd4",
-    "GUID:91f7c9a5e19db074aa84343c637371f7",
-    "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": false,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "App.InGame.Prop",
+    "rootNamespace": "App.InGame.Prop",
+    "references": [
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:91f7c9a5e19db074aa84343c637371f7",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:21d1eb854b91ade49bc69a263d12bee2",
+        "GUID:3b570a5146f9d4f0fa107ed4559471a3",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:bd9a740f9d4c9c34b88477348688312d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

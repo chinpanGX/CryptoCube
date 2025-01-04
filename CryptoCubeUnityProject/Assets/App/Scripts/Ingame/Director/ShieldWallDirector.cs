@@ -16,7 +16,6 @@ namespace App.InGame.HUD
         [Inject]
         public void Construct(
             IPublisher<OnTriggerEnterWithShieldWallMessage> onTriggerEnterWithShieldWallPublisher,
-            IPublisher<PlayerControlPermissionMessage> playerControlPermissionPublisher,
             ISubscriber<UnlockedShieldWallMessage> unlockedShieldWallSubscriber)
         {
             shieldWallDictionary.Clear();
@@ -36,4 +35,5 @@ namespace App.InGame.HUD
             );
         }
     }
+
 }

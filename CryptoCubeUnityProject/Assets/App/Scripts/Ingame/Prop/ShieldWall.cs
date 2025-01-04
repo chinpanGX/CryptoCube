@@ -31,4 +31,5 @@ namespace App.InGame.Prop
             Destroy(gameObject);
         }
     }
+
 }

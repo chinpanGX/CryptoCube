@@ -13,12 +13,16 @@ namespace App.InGame.HUD
         [SerializeField] private PlayerController playerController;
         [SerializeField] private HackingTaskView hackingTaskView;
         [SerializeField] private InGameHudView inGameHudView;
-        [SerializeField] private ShieldWallDirector shieldWallDirector;
         [SerializeField] private GoalTrigger goalTrigger;
+        [SerializeField] private ShieldWallDirector shieldWallDirector;
+        [SerializeField] private PatrolEnemyDirector patrolEnemyDirector;
+        [SerializeField] private CharacterSpawner characterSpawner;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterMessagePipe();
+            builder.RegisterComponent(characterSpawner).AsImplementedInterfaces();
+            builder.RegisterComponent(patrolEnemyDirector);
             builder.RegisterComponent(goalTrigger);
             builder.RegisterComponent(playerController);
             builder.RegisterComponent(hackingTaskView);

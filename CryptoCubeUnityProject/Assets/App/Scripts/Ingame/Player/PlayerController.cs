@@ -1,5 +1,7 @@
 using System;
 using App.InGame.Message;
+using App.InGame.Prop;
+using Cysharp.Threading.Tasks;
 using MessagePipe;
 using R3;
 using R3.Triggers;
@@ -29,7 +31,9 @@ namespace App.InGame.Player
         }
 
         [Inject]
-        public void Construct(ISubscriber<PlayerControlPermissionMessage> subscriber)
+        public void Construct(ISubscriber<PlayerControlPermissionMessage> subscriber,
+            ISubscriber<OnTriggerEnterWithPatrolEnemyMessage> onTriggerEnterWithPatrolEnemySubscriber,
+            ICharacterSpawner characterSpawner)
         {
             canControl = false;
             playerControlPermissionSubscriber = subscriber;
@@ -44,6 +48,18 @@ namespace App.InGame.Player
 
             playerControlPermissionSubscriber
                 .Subscribe(message => { canControl = message.CanControl; })
+                .RegisterTo(destroyCancellationToken);
+
+            onTriggerEnterWithPatrolEnemySubscriber
+                .AsObservable()
+                .ToObservable()
+                .SubscribeAwait(async (_, ct) => 
+                {
+                    canControl = false;
+                    transform.position = characterSpawner.Position;
+                    await UniTask.Delay(500, cancellationToken: ct);
+                    canControl = true;
+                })
                 .RegisterTo(destroyCancellationToken);
         }
 
@@ -61,6 +77,14 @@ namespace App.InGame.Player
         private void CancelMove(InputAction.CallbackContext context)
         {
             direction = Vector3.zero;
+        }
+
+        private async UniTask Respawn()
+        {
+            canControl = false;
+            
+            transform.position = Vector3.zero;
+            Debug.Log("PlayerController: Player is respawned.");
         }
     }
 }

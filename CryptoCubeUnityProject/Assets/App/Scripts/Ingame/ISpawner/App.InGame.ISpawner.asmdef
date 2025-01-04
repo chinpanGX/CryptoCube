@@ -1,0 +1,14 @@
+{
+    "name": "App.InGame.ISpawner",
+    "rootNamespace": "App.InGame.ISpawner",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
