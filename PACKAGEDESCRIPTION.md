@@ -8,4 +8,5 @@
 |ObservableCollections|MIT|3.3.3|https://github.com/Cysharp/ObservableCollections|
 |ZString|MIT|2.6.0|https://github.com/Cysharp/ZString|
 |VContainer|MIT|1.16.5|https://vcontainer.hadashikick.jp/ja/|
+|LitMotion|MIT|2.0.0|https://github.com/AnnulusGames/LitMotion|
 |DotGothic16（フォント）|OFL-1.1|-|https://github.com/fontworks-fonts/DotGothic16|

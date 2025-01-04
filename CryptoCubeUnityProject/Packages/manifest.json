@@ -2,6 +2,7 @@
   "dependencies": {
     "appcore": "file:../../Packages/AppCore",
     "appservice": "file:../../Packages/AppService",
+    "com.annulusgames.lit-motion": "https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
     "com.cysharp.messagepipe": "1.8.1",
     "com.cysharp.messagepipe.vcontainer": "1.8.1",
     "com.cysharp.r3": "1.2.9",
