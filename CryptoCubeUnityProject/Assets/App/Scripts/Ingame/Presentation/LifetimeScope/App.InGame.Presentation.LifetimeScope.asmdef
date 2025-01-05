@@ -1,0 +1,24 @@
+{
+    "name": "App.InGame.Presentation.LifetimeScope",
+    "rootNamespace": "App.InGame.Presentation",
+    "references": [
+        "GUID:54a2c7e87b2e33c4682fe98c62bb2fe5",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338",
+        "GUID:4f682e06dbb3e624faedad9cc27106cc",
+        "GUID:34477041819e37345a3b97ac45ce0c55",
+        "GUID:77fa84171dfb5ee49be7aa3cc12f1cbd",
+        "GUID:a84f5d3464fa16748b6217d05b3067ea",
+        "GUID:48108e346aa0ca546b6148c718a8a415",
+        "App.InGame.Domain.Interfaces"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

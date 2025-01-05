@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 3745126386545045550}
   - component: {fileID: 831337298870941530}
   - component: {fileID: 1387115893777744131}
-  - component: {fileID: 13764758246779241}
   m_Layer: 5
   m_Name: HackingTaskView
   m_TagString: Untagged
@@ -134,23 +133,6 @@ MonoBehaviour:
   canvas: {fileID: 8946121420431305019}
   hackingText: {fileID: 3146531554194585770}
   inputField: {fileID: 5590569826988713860}
---- !u!320 &13764758246779241
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544460883193191308}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 0}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings: []
-  m_ExposedReferences:
-    m_References: []
 --- !u!1 &2797727243767674200
 GameObject:
   m_ObjectHideFlags: 0
