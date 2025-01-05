@@ -9,11 +9,11 @@ namespace App.InGame.Presentation.HUD
         private readonly CancellationDisposable cancellationDisposable;
 
         [Inject]
-        public HackingGamePresenter(IDirector director, HackingGameUseCase useCase, InGameHudView inGameHudView,
+        public HackingGamePresenter(IDirector director, HackingGameApplicationService applicationService, InGameHudView inGameHudView,
             HackingGameView hackingGameView)
         {
             Director = director;
-            UseCase = useCase;
+            ApplicationService = applicationService;
             InGameHudView = inGameHudView;
             HackingGameView = hackingGameView;
             cancellationDisposable = new CancellationDisposable();
@@ -22,11 +22,11 @@ namespace App.InGame.Presentation.HUD
         private IDirector Director { get; set; }
         private InGameHudView InGameHudView { get; set; }
         private HackingGameView HackingGameView { get; set; }
-        private HackingGameUseCase UseCase { get; set; }
+        private HackingGameApplicationService ApplicationService { get; set; }
 
         public void Execute()
         {
-            UseCase.Execute();
+            ApplicationService.Execute();
         }
 
         public void Dispose()
@@ -36,8 +36,8 @@ namespace App.InGame.Presentation.HUD
             InGameHudView = null;
             HackingGameView.Pop();
             HackingGameView = null;
-            UseCase.Dispose();
-            UseCase = null;
+            ApplicationService.Dispose();
+            ApplicationService = null;
             cancellationDisposable.Dispose();
         }
 
@@ -49,28 +49,28 @@ namespace App.InGame.Presentation.HUD
             InGameHudView.Push();
             InGameHudView.Hide();
 
-            UseCase.HackingRemainTime
+            ApplicationService.HackingRemainTime
                 .Subscribe(InGameHudView.SetRemainingTimeText)
                 .RegisterTo(cancellationDisposable.Token);
 
-            UseCase.StartHacking
+            ApplicationService.StartHacking
                 .Subscribe(StartHacking)
                 .RegisterTo(cancellationDisposable.Token);
 
-            UseCase.HackingRemainTime
+            ApplicationService.HackingRemainTime
                 .Where(x => x == 0)
                 .Subscribe(_ => EndState())
                 .RegisterTo(cancellationDisposable.Token);
 
-            UseCase.CheckPassword
+            ApplicationService.CheckPassword
                 .Subscribe(CheckPassword)
                 .RegisterTo(cancellationDisposable.Token);
 
             HackingGameView.Request
-                .Subscribe(text => UseCase.RequestPassword(text))
+                .Subscribe(text => ApplicationService.RequestPassword(text))
                 .RegisterTo(cancellationDisposable.Token);
 
-            UseCase.Setup();
+            ApplicationService.Setup();
             HackingGameView.Setup();
             InGameHudView.Open();
         }
@@ -86,12 +86,12 @@ namespace App.InGame.Presentation.HUD
             if (!passwordCorrect) return;
 
             HackingGameView.Hide();
-            UseCase.UnlockSuccess();
+            ApplicationService.ShieldUnlockedSuccess();
         }
 
         private void EndState()
         {
-            UseCase.ChangeEndState();
+            ApplicationService.ChangeEndState();
             InGameHudView.Close();
         }
     }

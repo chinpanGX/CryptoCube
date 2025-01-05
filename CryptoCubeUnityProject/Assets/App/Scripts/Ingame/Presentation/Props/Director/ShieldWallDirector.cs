@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using App.InGame.Application;
 using R3;
 using UnityEngine;
@@ -35,7 +36,7 @@ namespace App.InGame.Presentation.Props
                     }
                 ).RegisterTo(destroyCancellationToken);
         }
-
+        
         private void OnDestroy()
         {
             ApplicationService?.Dispose();

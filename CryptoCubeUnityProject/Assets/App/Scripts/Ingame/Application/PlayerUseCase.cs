@@ -8,7 +8,7 @@ using VContainer;
 
 namespace App.InGame.Application
 {
-    public class PlayerUseCase : IDisposable
+    public class PlayerApplicationService : IDisposable
     {
         private readonly IPublisher<PlayerRespawnCompletedMessage> playerRespawnCompletedPublisher;
         private readonly Subject<Vector3> onRespawn = new();
@@ -17,10 +17,10 @@ namespace App.InGame.Application
         private readonly ISpawn spawn;
 
         public Observable<Vector3> OnRespawn => onRespawn;
-        public Observable<bool> CanControl => canControl;
+        public ReadOnlyReactiveProperty<bool> CanControl => canControl;
 
         [Inject]
-        public PlayerUseCase(ISubscriber<PlayerControlPermissionMessage> playerControlPermissionSubscriber,
+        public PlayerApplicationService(ISubscriber<PlayerControlPermissionMessage> playerControlPermissionSubscriber,
             ISubscriber<OnTriggerEnterWithPlayerRestartMessage> onTriggerEnterWithPlayerRestartSubscriber,
             IPublisher<PlayerRespawnCompletedMessage> playerRespawnCompletedPublisher,
             ISpawn spawn)

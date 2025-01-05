@@ -16,82 +16,118 @@ namespace App.InGame.Presentation.Player
         [SerializeField] private CharacterController characterController;
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private float speed = 5.0f;
-
-        private Vector3 direction;
-        private InputAction moveAction;
+        
         private CameraController cameraController;
+        private MoveController moveController;
 
-        private PlayerUseCase PlayerUseCase { get; set; }
+        private PlayerApplicationService PlayerApplicationService { get; set; }
 
         [Inject]
-        public void Construct(PlayerUseCase playerUseCase, ICameraSwitcher cameraSwitcher)
+        public void Construct(PlayerApplicationService playerApplicationService, ICameraSwitcher cameraSwitcher)
         {
-            PlayerUseCase = playerUseCase;
+            PlayerApplicationService = playerApplicationService;
             cameraController = new CameraController(cameraSwitcher,
                 playerInput.actions["LeftLock"],
                 playerInput.actions["RightLock"]
             );
-
-            playerInput.DeactivateInput();
-
-            moveAction = playerInput.actions["Move"];
-            moveAction.performed += DoMove;
-            moveAction.canceled += CancelMove;
-
+            
+            moveController = new MoveController(characterController, playerInput.actions["Move"], speed);
+            
             this.UpdateAsObservable()
                 .Subscribe(_ => Tick())
                 .RegisterTo(destroyCancellationToken);
 
-            PlayerUseCase.OnRespawn
+            PlayerApplicationService.OnRespawn
                 .SubscribeAwait(async (spawnPosition, ct) => await RespawnAsync(spawnPosition, ct))
                 .RegisterTo(destroyCancellationToken);
 
-            PlayerUseCase.CanControl
-                .Subscribe(x =>
-                {
-                    if (x)
-                    {
-                        playerInput.ActivateInput();
-                    }
-                    else
-                    {
-                        playerInput.DeactivateInput();
-                    }
-                })
+            PlayerApplicationService.CanControl
+                .Subscribe(SetActivateInput)
                 .RegisterTo(destroyCancellationToken);
+            
+            playerInput.DeactivateInput();
         }
-
+        
         private void Tick()
         {
-            characterController.Move(direction * (speed * Time.deltaTime));
+            if (PlayerApplicationService.CanControl.CurrentValue)
+                moveController.Tick();
         }
-
-        private void DoMove(InputAction.CallbackContext context)
+        
+        private void SetActivateInput(bool canControl)
         {
-            var move = context.ReadValue<Vector2>();
-            direction = new Vector3(move.x, 0, move.y);
+            if (canControl)
+            {
+                playerInput.ActivateInput();
+                return;
+            }
+            
+            playerInput.DeactivateInput();
         }
-
-        private void CancelMove(InputAction.CallbackContext context)
-        {
-            direction = Vector3.zero;
-        }
-
+        
         private async UniTask RespawnAsync(Vector3 spawnPosition, CancellationToken ct)
         {
+            moveController.ForceStop();
             transform.position = spawnPosition;
             await UniTask.Delay(500, cancellationToken: ct);
-            PlayerUseCase.RespawnCompleted();
+            PlayerApplicationService.RespawnCompleted();
         }
 
         private void OnDestroy()
         {
-            moveAction.performed -= DoMove;
-            moveAction.canceled -= CancelMove;
+            moveController.Dispose();
             cameraController.Dispose();
-            PlayerUseCase.Dispose();
+            PlayerApplicationService.Dispose();
         }
 
+        #region MoveController
+        class MoveController : IDisposable
+        {
+            private readonly CharacterController characterController;
+            private readonly InputAction moveAction;
+            private readonly float speed;
+            private Vector3 direction;
+            
+            public MoveController(CharacterController characterController, InputAction moveAction, float speed)
+            {
+                this.characterController = characterController;
+                this.moveAction = moveAction;
+                this.moveAction.performed += DoMove;
+                this.moveAction.canceled += CancelMove;
+                this.speed = speed;
+                direction = Vector3.zero;
+            }
+
+            public void Tick()
+            {
+                characterController.Move(direction * (speed * Time.deltaTime));
+            }
+            
+            public void ForceStop()
+            {
+                direction = Vector3.zero;
+            }
+            
+            private void DoMove(InputAction.CallbackContext context)
+            {
+                var move = context.ReadValue<Vector2>();
+                direction = new Vector3(move.x, 0, move.y);
+            }
+
+            private void CancelMove(InputAction.CallbackContext context)
+            {
+                direction = Vector3.zero;
+            }
+
+            public void Dispose()
+            {
+                moveAction.performed -= DoMove;
+                moveAction.canceled -= CancelMove;
+            }
+        }
+        #endregion MoveController
+
+        #region CameraController
         class CameraController : IDisposable
         {
             private readonly ICameraSwitcher cameraSwitcher;
@@ -133,5 +169,6 @@ namespace App.InGame.Presentation.Player
                 rightAction.canceled -= DoCancel;
             }
         }
+        #endregion CameraController
     }
 }

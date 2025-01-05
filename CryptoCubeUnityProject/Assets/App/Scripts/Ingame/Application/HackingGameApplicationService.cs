@@ -6,31 +6,34 @@ using AppCore.Runtime;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using R3;
+using VContainer;
 
 namespace App.InGame.Presentation.HUD
 {
-    public class HackingGameUseCase
+    public class HackingGameApplicationService
     {
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly Subject<bool> checkPasswordSubject = new();
-        private readonly ReactiveProperty<int> hackingRemainTime = new(60);
-        private readonly bool pausing = false;
         private readonly Subject<string> startHackingSubject = new();
+        private readonly ReactiveProperty<int> hackingRemainTime = new(60);
+        private readonly ReactiveProperty<bool> pausing = new(false);
         private GameControlEntity entity;
         
-        private StateMachine<HackingGameUseCase> StateMachine { get; }
+        public Observable<string> StartHacking => startHackingSubject;
+        public Observable<bool> CheckPassword => checkPasswordSubject;
+        public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
+        public ReadOnlyReactiveProperty<bool> Pausing => pausing;
+        
+        private StateMachine<HackingGameApplicationService> StateMachine { get; }
         private ISubscriber<OnTriggerEnterWithGoalMessage> OnTriggerEnterWithGoalSubscriber { get; }
         private ISubscriber<OnTriggerEnterWithShieldWallMessage> OnTriggerEnterWithShieldWallSubscriber { get; }
         private IPublisher<PlayerControlPermissionMessage> PlayerControlPermissionPublisher { get; }
         private IPublisher<UnlockedShieldWallMessage> UnlockedShieldWallPublisher { get; }
-
-        private int HackingTargetShieldWallId { get; set; }
-
-        public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
-        public Observable<string> StartHacking => startHackingSubject;
-        public Observable<bool> CheckPassword => checkPasswordSubject;
         
-        public HackingGameUseCase(IPublisher<PlayerControlPermissionMessage> playerControlPermissionPublisher,
+        private int HackingTargetShieldWallId { get; set; }
+        
+        [Inject]
+        public HackingGameApplicationService(IPublisher<PlayerControlPermissionMessage> playerControlPermissionPublisher,
             IPublisher<UnlockedShieldWallMessage> unlockedShieldWallPublisher,
             ISubscriber<OnTriggerEnterWithShieldWallMessage> onTriggerEnterWithShieldWallSubscriber,
             ISubscriber<OnTriggerEnterWithGoalMessage> onTriggerEnterWithGoalSubscriber)
@@ -39,7 +42,7 @@ namespace App.InGame.Presentation.HUD
             UnlockedShieldWallPublisher = unlockedShieldWallPublisher;
             OnTriggerEnterWithShieldWallSubscriber = onTriggerEnterWithShieldWallSubscriber;
             OnTriggerEnterWithGoalSubscriber = onTriggerEnterWithGoalSubscriber;
-            StateMachine = new StateMachine<HackingGameUseCase>(this);
+            StateMachine = new StateMachine<HackingGameApplicationService>(this);
             StateMachine.Change<StateInit>();
         }
 
@@ -67,8 +70,20 @@ namespace App.InGame.Presentation.HUD
         {
             StateMachine.Change<StateEnd>();
         }
-
-        public void UnlockSuccess()
+        
+        private async UniTaskVoid GameStartAsync()
+        {
+            // ゲーム開始前の処理
+            PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            
+            // ゲーム開始
+            entity.StartCountDown(cancellationTokenSource.Token).Forget();
+            PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(true));
+            StateMachine.Change<StateSearching>();
+        }
+        
+        public void ShieldUnlockedSuccess()
         {
             UnlockedShieldWallPublisher.Publish(new UnlockedShieldWallMessage(HackingTargetShieldWallId));
             PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(true));
@@ -79,24 +94,18 @@ namespace App.InGame.Presentation.HUD
         {
             checkPasswordSubject.OnNext(password == "abcd");
         }
-
-        private void GameStart()
-        {
-            entity.StartCountDown(cancellationTokenSource.Token).Forget();
-            PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(true));
-            StateMachine.Change<StateSearching>();
-        }
-
+        
         private string GetPassword()
         {
             // TODO 衝突した壁のIDをもとにマスタからパスワードを取得する 
             // HackingTargetShieldWallId
             return "abcd";
         }
-
-        private class StateInit : StateMachine<HackingGameUseCase>.State
+        
+        #region StateMachine
+        private class StateInit : StateMachine<HackingGameApplicationService>.State
         {
-            public override void Begin(HackingGameUseCase owner)
+            public override void Begin(HackingGameApplicationService owner)
             {
                 owner.OnTriggerEnterWithShieldWallSubscriber
                     .Subscribe(message => { StartHacking(owner, message.ShieldWallId); })
@@ -109,56 +118,51 @@ namespace App.InGame.Presentation.HUD
                 owner.StateMachine.Change<StatePreStart>();
             }
 
-            private void StartHacking(HackingGameUseCase owner, int shieldWallId)
+            private void StartHacking(HackingGameApplicationService owner, int shieldWallId)
             {
                 owner.HackingTargetShieldWallId = shieldWallId;
                 owner.StateMachine.Change<StateHacking>();
             }
 
-            private void StopCountdown(HackingGameUseCase owner)
+            private void StopCountdown(HackingGameApplicationService owner)
             {
                 owner.cancellationTokenSource.Cancel();
                 owner.StateMachine.Change<StateEnd>();
             }
         }
 
-        private class StatePreStart : StateMachine<HackingGameUseCase>.State
+        private class StatePreStart : StateMachine<HackingGameApplicationService>.State
         {
-            public override void Begin(HackingGameUseCase owner)
+            public override void Begin(HackingGameApplicationService owner)
             {
-                Start(owner).Forget();
-            }
-
-            private async UniTaskVoid Start(HackingGameUseCase owner)
-            {
-                await UniTask.Delay(TimeSpan.FromSeconds(1));
-                owner.GameStart();
+                owner.GameStartAsync().Forget();
             }
         }
 
-        private class StateSearching : StateMachine<HackingGameUseCase>.State
+        private class StateSearching : StateMachine<HackingGameApplicationService>.State
         {
-            public override void Begin(HackingGameUseCase owner)
+            public override void Begin(HackingGameApplicationService owner)
             {
 
             }
         }
 
-        private class StateHacking : StateMachine<HackingGameUseCase>.State
+        private class StateHacking : StateMachine<HackingGameApplicationService>.State
         {
-            public override void Begin(HackingGameUseCase owner)
+            public override void Begin(HackingGameApplicationService owner)
             {
                 owner.PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
                 owner.startHackingSubject.OnNext(owner.GetPassword());
             }
         }
 
-        private class StateEnd : StateMachine<HackingGameUseCase>.State
+        private class StateEnd : StateMachine<HackingGameApplicationService>.State
         {
-            public override void Begin(HackingGameUseCase owner)
+            public override void Begin(HackingGameApplicationService owner)
             {
                 owner.PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
             }
         }
+        #endregion StateMachine
     }
 }

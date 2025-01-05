@@ -34,13 +34,13 @@ namespace App.InGame.Presentation
             builder.RegisterComponent(hackingGameView);
             builder.RegisterComponent(inGameHudView);
             builder.RegisterComponent(shieldWallDirector);
-            builder.Register<PlayerUseCase>(Lifetime.Scoped);
+            builder.Register<PlayerApplicationService>(Lifetime.Scoped);
             builder.Register<CharacterSpawnApplicationService>(Lifetime.Scoped).As<ISpawn>().AsSelf();
             builder.Register<GoalApplicationService>(Lifetime.Scoped);
             builder.Register<ShieldWallApplicationService>(Lifetime.Scoped);
             builder.Register<PatrolEnemyApplicationService>(Lifetime.Scoped);
             builder.Register<UpdatablePresenter>(Lifetime.Scoped);
-            builder.Register<HackingGameUseCase>(Lifetime.Scoped);
+            builder.Register<HackingGameApplicationService>(Lifetime.Scoped);
             builder.Register<HackingGamePresenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<InGameDirector>();
         }
