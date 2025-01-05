@@ -8,7 +8,7 @@ using UnityEngine.Splines;
 
 namespace App.InGame.Presentation.Props
 {
-    public class PatrolEnemy : MonoBehaviour
+    internal class PatrolEnemy : MonoBehaviour
     {
         [SerializeField] private SplineContainer splineContainer;
         [SerializeField] private Transform actorTransform;

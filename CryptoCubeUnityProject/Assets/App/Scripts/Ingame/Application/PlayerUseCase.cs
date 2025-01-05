@@ -12,11 +12,12 @@ namespace App.InGame.Application
     {
         private readonly IPublisher<PlayerRespawnCompletedMessage> playerRespawnCompletedPublisher;
         private readonly Subject<Vector3> onRespawn = new();
+        private readonly ReactiveProperty<bool> canControl = new(false);
         private readonly CancellationDisposable cancellationDisposable = new();
         private readonly ISpawn spawn;
 
         public Observable<Vector3> OnRespawn => onRespawn;
-        public bool CanControl { get; private set; }
+        public Observable<bool> CanControl => canControl;
 
         [Inject]
         public PlayerUseCase(ISubscriber<PlayerControlPermissionMessage> playerControlPermissionSubscriber,
@@ -24,12 +25,12 @@ namespace App.InGame.Application
             IPublisher<PlayerRespawnCompletedMessage> playerRespawnCompletedPublisher,
             ISpawn spawn)
         {
-            CanControl = false;
+            canControl.Value = false;
             this.spawn = spawn;
             this.playerRespawnCompletedPublisher = playerRespawnCompletedPublisher;
 
             playerControlPermissionSubscriber
-                .Subscribe(message => { CanControl = message.CanControl; })
+                .Subscribe(message => { canControl.Value = message.CanControl; })
                 .RegisterTo(cancellationDisposable.Token);
 
             onTriggerEnterWithPlayerRestartSubscriber
@@ -45,12 +46,12 @@ namespace App.InGame.Application
         public void RespawnCompleted()
         {
             playerRespawnCompletedPublisher.Publish(new PlayerRespawnCompletedMessage());
-            CanControl = true;
+            canControl.Value = true;
         }
         
         private Vector3 GetSpawnPosition()
         {
-            CanControl = false;
+            canControl.Value = false;
             return spawn.GetSpawnPosition();
         }
     }

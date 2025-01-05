@@ -20,10 +20,12 @@ namespace App.InGame.Presentation
         [SerializeField] private ShieldWallDirector shieldWallDirector;
         [SerializeField] private PatrolEnemyDirector patrolEnemyDirector;
         [SerializeField] private CharacterSpawnerDirector characterSpawnerDirector;
+        [SerializeField] private CameraGroup cameraGroup;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterMessagePipe();
+            builder.RegisterInstance(cameraGroup).AsImplementedInterfaces();
             builder.RegisterInstance(characterSpawnerDirector.CharacterSpawnerInterfaces);
             builder.RegisterComponent(characterSpawnerDirector);
             builder.RegisterComponent(patrolEnemyDirector);

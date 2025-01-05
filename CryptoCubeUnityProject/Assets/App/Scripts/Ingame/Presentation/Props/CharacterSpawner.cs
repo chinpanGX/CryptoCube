@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace App.InGame.Presentation.Props
 {
-    public class CharacterSpawner : MonoBehaviour, ICharacterSpawner
+    internal class CharacterSpawner : MonoBehaviour, ICharacterSpawner
     {
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private bool started;

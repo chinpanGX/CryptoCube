@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using App.InGame.Application;
 using Cysharp.Threading.Tasks;
@@ -15,27 +16,48 @@ namespace App.InGame.Presentation.Player
         [SerializeField] private CharacterController characterController;
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private float speed = 5.0f;
-        
+
         private Vector3 direction;
         private InputAction moveAction;
-        
+        private CameraController cameraController;
+
         private PlayerUseCase PlayerUseCase { get; set; }
-        
+
         [Inject]
-        public void Construct(PlayerUseCase playerUseCase)
+        public void Construct(PlayerUseCase playerUseCase, ICameraSwitcher cameraSwitcher)
         {
             PlayerUseCase = playerUseCase;
+            cameraController = new CameraController(cameraSwitcher,
+                playerInput.actions["LeftLock"],
+                playerInput.actions["RightLock"]
+            );
+
+            playerInput.DeactivateInput();
+
             moveAction = playerInput.actions["Move"];
             moveAction.performed += DoMove;
             moveAction.canceled += CancelMove;
 
             this.UpdateAsObservable()
-                .Where(_ => PlayerUseCase.CanControl)
                 .Subscribe(_ => Tick())
                 .RegisterTo(destroyCancellationToken);
 
             PlayerUseCase.OnRespawn
                 .SubscribeAwait(async (spawnPosition, ct) => await RespawnAsync(spawnPosition, ct))
+                .RegisterTo(destroyCancellationToken);
+
+            PlayerUseCase.CanControl
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        playerInput.ActivateInput();
+                    }
+                    else
+                    {
+                        playerInput.DeactivateInput();
+                    }
+                })
                 .RegisterTo(destroyCancellationToken);
         }
 
@@ -66,7 +88,50 @@ namespace App.InGame.Presentation.Player
         {
             moveAction.performed -= DoMove;
             moveAction.canceled -= CancelMove;
+            cameraController.Dispose();
             PlayerUseCase.Dispose();
+        }
+
+        class CameraController : IDisposable
+        {
+            private readonly ICameraSwitcher cameraSwitcher;
+            private readonly InputAction leftAction;
+            private readonly InputAction rightAction;
+
+            public CameraController(ICameraSwitcher cameraSwitcher, InputAction leftAction, InputAction rightAction)
+            {
+                this.cameraSwitcher = cameraSwitcher;
+                this.leftAction = leftAction;
+                this.rightAction = rightAction;
+
+                this.leftAction.performed += DoLeftLock;
+                this.leftAction.canceled += DoCancel;
+                this.rightAction.performed += DoRightLock;
+                this.rightAction.canceled += DoCancel;
+            }
+
+            private void DoLeftLock(InputAction.CallbackContext context)
+            {
+                cameraSwitcher.SwitchCamera(ActivateCamera.LeftLock);
+            }
+
+            private void DoRightLock(InputAction.CallbackContext context)
+            {
+                cameraSwitcher.SwitchCamera(ActivateCamera.RightLock);
+            }
+
+            private void DoCancel(InputAction.CallbackContext context)
+            {
+                cameraSwitcher.SwitchCamera(ActivateCamera.ForwardLock);
+            }
+
+            public void Dispose()
+            {
+                leftAction.performed -= DoLeftLock;
+                leftAction.canceled -= DoCancel;
+                rightAction.performed -= DoRightLock;
+                rightAction.canceled -= DoCancel;
+            }
         }
     }
 }

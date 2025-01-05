@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace App.InGame.Presentation.Props
 {
-    public class ShieldWall : MonoBehaviour
+    internal class ShieldWall : MonoBehaviour
     {
         [SerializeField] private int id;
         public int Id => id;
