@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using App.InGame.Application;
 using Cysharp.Threading.Tasks;
@@ -7,16 +8,21 @@ using R3.Triggers;
 using VContainer;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
 namespace App.InGame.Presentation.Player
 {
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private CharacterController characterController;
+        [Header("アニメーション")] [SerializeField] private Animator animator;
+        [SerializeField] private Transform model;
+
+        [Space(10)] [SerializeField] private CharacterController characterController;
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private float speed = 5.0f;
-        
+
+        private AnimationController animationController;
         private CameraController cameraController;
         private MoveController moveController;
 
@@ -30,9 +36,13 @@ namespace App.InGame.Presentation.Player
                 playerInput.actions["LeftLock"],
                 playerInput.actions["RightLock"]
             );
-            
-            moveController = new MoveController(characterController, playerInput.actions["Move"], speed);
-            
+
+            animationController = new AnimationController(animator);
+            moveController = new MoveController(model, animationController, characterController,
+                playerInput.actions["Move"],
+                speed
+            );
+
             this.UpdateAsObservable()
                 .Subscribe(_ => Tick())
                 .RegisterTo(destroyCancellationToken);
@@ -44,16 +54,17 @@ namespace App.InGame.Presentation.Player
             PlayerApplicationService.CanControl
                 .Subscribe(SetActivateInput)
                 .RegisterTo(destroyCancellationToken);
-            
+
             playerInput.DeactivateInput();
+            animationController.Play("Idle");
         }
-        
+
         private void Tick()
         {
             if (PlayerApplicationService.CanControl.CurrentValue)
                 moveController.Tick();
         }
-        
+
         private void SetActivateInput(bool canControl)
         {
             if (canControl)
@@ -61,10 +72,10 @@ namespace App.InGame.Presentation.Player
                 playerInput.ActivateInput();
                 return;
             }
-            
+
             playerInput.DeactivateInput();
         }
-        
+
         private async UniTask RespawnAsync(Vector3 spawnPosition, CancellationToken ct)
         {
             moveController.ForceStop();
@@ -75,21 +86,31 @@ namespace App.InGame.Presentation.Player
 
         private void OnDestroy()
         {
+            animationController.Dispose();
             moveController.Dispose();
             cameraController.Dispose();
             PlayerApplicationService.Dispose();
         }
 
         #region MoveController
+
         class MoveController : IDisposable
         {
+            private readonly Transform model;
+            private readonly AnimationController animationController;
             private readonly CharacterController characterController;
             private readonly InputAction moveAction;
             private readonly float speed;
             private Vector3 direction;
-            
-            public MoveController(CharacterController characterController, InputAction moveAction, float speed)
+
+            public MoveController(
+                Transform model,
+                AnimationController animationController,
+                CharacterController characterController,
+                InputAction moveAction, float speed)
             {
+                this.model = model;
+                this.animationController = animationController;
                 this.characterController = characterController;
                 this.moveAction = moveAction;
                 this.moveAction.performed += DoMove;
@@ -101,20 +122,10 @@ namespace App.InGame.Presentation.Player
             public void Tick()
             {
                 characterController.Move(direction * (speed * Time.deltaTime));
-            }
-            
-            public void ForceStop()
-            {
-                direction = Vector3.zero;
-            }
-            
-            private void DoMove(InputAction.CallbackContext context)
-            {
-                var move = context.ReadValue<Vector2>();
-                direction = new Vector3(move.x, 0, move.y);
+                model.rotation = Quaternion.LookRotation(direction);
             }
 
-            private void CancelMove(InputAction.CallbackContext context)
+            public void ForceStop()
             {
                 direction = Vector3.zero;
             }
@@ -124,10 +135,39 @@ namespace App.InGame.Presentation.Player
                 moveAction.performed -= DoMove;
                 moveAction.canceled -= CancelMove;
             }
+
+            private void DoMove(InputAction.CallbackContext context)
+            {
+                var move = context.ReadValue<Vector2>();
+                direction = new Vector3(move.x, 0, move.y);
+                animationController.Play(GetAnimKey(move));
+            }
+
+            private void CancelMove(InputAction.CallbackContext context)
+            {
+                direction = Vector3.zero;
+                animationController.Play("Idle");
+            }
+
+            private string GetAnimKey(Vector2 move)
+            {
+                if (move.y > 0)
+                    return "Forward";
+                if (move.y < 0)
+                    return "Backward";
+                if (move.x > 0)
+                    return "Right";
+                if (move.x < 0)
+                    return "Left";
+
+                return "Idle";
+            }
         }
+
         #endregion MoveController
 
         #region CameraController
+
         class CameraController : IDisposable
         {
             private readonly ICameraSwitcher cameraSwitcher;
@@ -169,6 +209,36 @@ namespace App.InGame.Presentation.Player
                 rightAction.canceled -= DoCancel;
             }
         }
+
         #endregion CameraController
+
+        #region AnimationController
+
+        class AnimationController : IDisposable
+        {
+            private readonly Animator animator;
+
+            public AnimationController(Animator animator)
+            {
+                this.animator = animator;
+
+            }
+
+            public void Play(string key)
+            {
+                if (key == "Idle")
+                    animator.SetBool("Running", false);
+                else
+                    animator.SetBool("Running", true);
+            }
+
+            public void Dispose()
+            {
+
+            }
+        }
+
+        #endregion AnimationController
+
     }
 }
