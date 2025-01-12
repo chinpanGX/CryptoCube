@@ -55,7 +55,7 @@ namespace App.InGame.Presentation.Player
                 .Subscribe(SetActivateInput)
                 .RegisterTo(destroyCancellationToken);
 
-            playerInput.DeactivateInput();
+            SetActivateInput(false);
             animationController.Play("Idle");
         }
 
@@ -122,7 +122,11 @@ namespace App.InGame.Presentation.Player
             public void Tick()
             {
                 characterController.Move(direction * (speed * Time.deltaTime));
-                model.rotation = Quaternion.LookRotation(direction);
+                if (direction != Vector3.zero)
+                {
+                    animationController.Play("Running");
+                    model.rotation = Quaternion.LookRotation(direction);
+                }
             }
 
             public void ForceStop()
@@ -140,7 +144,6 @@ namespace App.InGame.Presentation.Player
             {
                 var move = context.ReadValue<Vector2>();
                 direction = new Vector3(move.x, 0, move.y);
-                animationController.Play("Running");
             }
 
             private void CancelMove(InputAction.CallbackContext context)
@@ -212,10 +215,7 @@ namespace App.InGame.Presentation.Player
 
             public void Play(string key)
             {
-                if (key == "Idle")
-                    animator.SetBool("Running", false);
-                else
-                    animator.SetBool("Running", true);
+                animator.SetBool("Running", key != "Idle");
             }
 
             public void Dispose()

@@ -1,4 +1,5 @@
 ﻿using AppCore.Runtime;
+using Cysharp.Threading.Tasks;
 using R3;
 using VContainer;
 
@@ -7,9 +8,14 @@ namespace App.InGame.Presentation.HUD
     public class HackingGamePresenter : IPresenter
     {
         private readonly CancellationDisposable cancellationDisposable;
+        private IDirector Director { get; set; }
+        private InGameHudView InGameHudView { get; set; }
+        private HackingGameView HackingGameView { get; set; }
+        private HackingGameApplicationService ApplicationService { get; set; }
 
         [Inject]
-        public HackingGamePresenter(IDirector director, HackingGameApplicationService applicationService, InGameHudView inGameHudView,
+        public HackingGamePresenter(IDirector director, HackingGameApplicationService applicationService,
+            InGameHudView inGameHudView,
             HackingGameView hackingGameView)
         {
             Director = director;
@@ -19,10 +25,6 @@ namespace App.InGame.Presentation.HUD
             cancellationDisposable = new CancellationDisposable();
             Setup();
         }
-        private IDirector Director { get; set; }
-        private InGameHudView InGameHudView { get; set; }
-        private HackingGameView HackingGameView { get; set; }
-        private HackingGameApplicationService ApplicationService { get; set; }
 
         public void Execute()
         {
@@ -63,20 +65,28 @@ namespace App.InGame.Presentation.HUD
                 .RegisterTo(cancellationDisposable.Token);
 
             ApplicationService.CheckPassword
-                .Subscribe(CheckPassword)
+                .SubscribeAwait(async (x, _) =>
+                    {
+                        CheckPassword(x);
+                        await InGameHudView.PlayAnimation("ManualOpen");
+                    }
+                )
                 .RegisterTo(cancellationDisposable.Token);
 
             HackingGameView.Request
                 .Subscribe(text => ApplicationService.RequestPassword(text))
                 .RegisterTo(cancellationDisposable.Token);
 
-            ApplicationService.Setup();
+            ApplicationService.PreStart
+                .Subscribe(_ => { OnStart().Forget(); })
+                .RegisterTo(cancellationDisposable.Token);
             HackingGameView.Setup();
             InGameHudView.Open();
         }
 
         private void StartHacking(string passwordAnswer)
         {
+            InGameHudView.PlayAnimation("ManualClose").Forget();
             HackingGameView.PreOpenSetup(passwordAnswer);
             HackingGameView.Open();
         }
@@ -93,6 +103,13 @@ namespace App.InGame.Presentation.HUD
         {
             ApplicationService.ChangeEndState();
             InGameHudView.Close();
+        }
+
+        private async UniTask OnStart()
+        {
+            var view = await StartView.LoadAsync();
+            await view.PlayAsync();
+            ApplicationService.GameStart();
         }
     }
 }
