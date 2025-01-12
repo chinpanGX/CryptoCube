@@ -33,12 +33,10 @@ namespace App.InGame.Presentation.Props
                 return;
             }
 
-            trigger.OnTriggerEnterAsObservable()
-                .Where(x => x.gameObject.CompareTag("Player"))
-                .Subscribe(_ => OnTrigger(onTriggerAction)
-                )
+            trigger.OnTriggerEnterToPlayer()
+                .Subscribe(_ => OnTrigger(onTriggerAction))
                 .RegisterTo(destroyCancellationToken);
-            
+
             PlayMotion();
         }
 
@@ -51,7 +49,7 @@ namespace App.InGame.Presentation.Props
                 .AddTo(gameObject);
             handle.Time = motionTime;
         }
-        
+
         private void OnTrigger(Action onTrigger)
         {
             onTrigger.Invoke();
