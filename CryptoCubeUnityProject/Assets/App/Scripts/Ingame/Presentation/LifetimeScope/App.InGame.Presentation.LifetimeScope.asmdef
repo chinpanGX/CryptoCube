@@ -10,7 +10,7 @@
         "GUID:77fa84171dfb5ee49be7aa3cc12f1cbd",
         "GUID:a84f5d3464fa16748b6217d05b3067ea",
         "GUID:48108e346aa0ca546b6148c718a8a415",
-        "App.InGame.Domain.Interfaces"
+        "GUID:ecfd356c0ff77b64aac18ba4f91129ed"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

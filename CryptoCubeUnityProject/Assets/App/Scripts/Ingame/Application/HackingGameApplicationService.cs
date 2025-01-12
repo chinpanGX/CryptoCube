@@ -17,12 +17,14 @@ namespace App.InGame.Presentation.HUD
         private readonly Subject<string> startHackingSubject = new();
         private readonly ReactiveProperty<int> hackingRemainTime = new(60);
         private readonly ReactiveProperty<bool> pausing = new(false);
+        private readonly ReactiveProperty<Unit> preStart = new();
         private GameControlEntity entity;
         
         public Observable<string> StartHacking => startHackingSubject;
         public Observable<bool> CheckPassword => checkPasswordSubject;
         public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
         public ReadOnlyReactiveProperty<bool> Pausing => pausing;
+        public ReadOnlyReactiveProperty<Unit> PreStart => preStart;
         
         private StateMachine<HackingGameApplicationService> StateMachine { get; }
         private ISubscriber<OnTriggerEnterWithGoalMessage> OnTriggerEnterWithGoalSubscriber { get; }
@@ -45,16 +47,7 @@ namespace App.InGame.Presentation.HUD
             StateMachine = new StateMachine<HackingGameApplicationService>(this);
             StateMachine.Change<StateInit>();
         }
-
-        public void Setup()
-        {
-            //　ステージデータを取得
-            entity = new GameControlEntity(60);
-            entity.HackingRemainTime
-                .Subscribe(time => hackingRemainTime.Value = time)
-                .RegisterTo(cancellationTokenSource.Token);
-        }
-
+        
         public void Execute()
         {
             StateMachine.Execute();
@@ -71,12 +64,8 @@ namespace App.InGame.Presentation.HUD
             StateMachine.Change<StateEnd>();
         }
         
-        private async UniTaskVoid GameStartAsync()
+        public void GameStart()
         {
-            // ゲーム開始前の処理
-            PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
-            
             // ゲーム開始
             entity.StartCountDown(cancellationTokenSource.Token).Forget();
             PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(true));
@@ -95,6 +84,15 @@ namespace App.InGame.Presentation.HUD
             checkPasswordSubject.OnNext(password == "abcd");
         }
         
+        private void Setup()
+        {
+            //　ステージデータを取得
+            entity = new GameControlEntity(60);
+            entity.HackingRemainTime
+                .Subscribe(time => hackingRemainTime.Value = time)
+                .RegisterTo(cancellationTokenSource.Token);
+        }
+        
         private string GetPassword()
         {
             // TODO 衝突した壁のIDをもとにマスタからパスワードを取得する 
@@ -107,6 +105,8 @@ namespace App.InGame.Presentation.HUD
         {
             public override void Begin(HackingGameApplicationService owner)
             {
+                owner.PlayerControlPermissionPublisher.Publish(new PlayerControlPermissionMessage(false));
+                
                 owner.OnTriggerEnterWithShieldWallSubscriber
                     .Subscribe(message => { StartHacking(owner, message.ShieldWallId); })
                     .RegisterTo(owner.cancellationTokenSource.Token);
@@ -114,8 +114,10 @@ namespace App.InGame.Presentation.HUD
                 owner.OnTriggerEnterWithGoalSubscriber
                     .Subscribe(_ => StopCountdown(owner))
                     .RegisterTo(owner.cancellationTokenSource.Token);
+                
+                owner.Setup();
 
-                owner.StateMachine.Change<StatePreStart>();
+                owner.preStart.OnNext(Unit.Default);
             }
 
             private void StartHacking(HackingGameApplicationService owner, int shieldWallId)
@@ -130,15 +132,7 @@ namespace App.InGame.Presentation.HUD
                 owner.StateMachine.Change<StateEnd>();
             }
         }
-
-        private class StatePreStart : StateMachine<HackingGameApplicationService>.State
-        {
-            public override void Begin(HackingGameApplicationService owner)
-            {
-                owner.GameStartAsync().Forget();
-            }
-        }
-
+        
         private class StateSearching : StateMachine<HackingGameApplicationService>.State
         {
             public override void Begin(HackingGameApplicationService owner)
