@@ -140,27 +140,13 @@ namespace App.InGame.Presentation.Player
             {
                 var move = context.ReadValue<Vector2>();
                 direction = new Vector3(move.x, 0, move.y);
-                animationController.Play(GetAnimKey(move));
+                animationController.Play("Running");
             }
 
             private void CancelMove(InputAction.CallbackContext context)
             {
                 direction = Vector3.zero;
                 animationController.Play("Idle");
-            }
-
-            private string GetAnimKey(Vector2 move)
-            {
-                if (move.y > 0)
-                    return "Forward";
-                if (move.y < 0)
-                    return "Backward";
-                if (move.x > 0)
-                    return "Right";
-                if (move.x < 0)
-                    return "Left";
-
-                return "Idle";
             }
         }
 
