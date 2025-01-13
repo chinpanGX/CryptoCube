@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -13,13 +14,12 @@ namespace MasterData.Tests
         [Test]
         public async Task TestMasterDataLoader()
         {
-            var loader = new MasterDataLoader();
-            var asset = await loader.LoadAsync<SampleText>("MasterData/Resource/SampleText.json");
-            var sampleTextMasterDataTable = new SampleTextMasterDataTable(asset);
+            var repository = new MasterDataRepository();
+            await repository.LoadAsync();
+            var sampleTextMasterDataTable = repository.GetTable<SampleTextMasterDataTable>();
             Assert.AreEqual(3, sampleTextMasterDataTable.GetAll().Count);
             
-            var asset2 = await loader.LoadAsync<SampleCharacter>("MasterData/Resource/SampleCharacter.json");
-            var sampleCharacterMasterDataTable = new SampleCharacterMasterDataTable(asset2);
+            var sampleCharacterMasterDataTable = repository.GetTable<SampleCharacterMasterDataTable>();
             Assert.AreEqual(3, sampleCharacterMasterDataTable.GetAll().Count);
             Assert.AreEqual("ピカチュウ", sampleCharacterMasterDataTable.GetById(1).Name);
         } 

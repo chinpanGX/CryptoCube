@@ -1,30 +1,46 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
-using MasterData.Runtime.Application;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
+using MasterData.Runtime.Domain;
 
 namespace MasterData.Runtime.Infrastructure
 {
-    public class MasterDataLoader : IMasterDataLoader
+    public partial class MasterDataLoader
     {
-        public async UniTask<T[]> LoadAsync<T>(string assetName)
+        private readonly List<MasterDataTable> tables = new();
+
+        public async UniTask<List<MasterDataTable>> LoadAll()
         {
-            var asset = await Addressables.LoadAssetAsync<TextAsset>(assetName).ToUniTask();
-            if (!asset.text.StartsWith("{\"Root\":")) 
-            {
-                throw new MasterDataException("Invalid master data format.");   
-            }
-            var master = JsonUtility.FromJson<MasterDataElement<T>>(asset.text);
-            return master.Root;
+            await UniTask.WhenAll(
+                LoadAsyncByLocalizationMaster(),
+                LoadAsyncByStageMaster(),
+                LoadAsyncByCharacterMaster(),
+                LoadAsyncByHackMaster()
+            );
+            return tables;
         }
 
-        [Serializable]
-        private class MasterDataElement<T>
+        private async UniTask LoadAsyncByLocalizationMaster()
         {
-            public T[] Root;
+            var data = await LoadAsync<LocalizationMaster>("LocalizationMaster");
+            tables.Add(new LocalizationMasterDataTable(data));
+        }
+
+        private async UniTask LoadAsyncByStageMaster()
+        {
+            var data = await LoadAsync<StageMaster>("StageMaster");
+            tables.Add(new StageMasterDataTable(data));
+        }
+
+        private async UniTask LoadAsyncByCharacterMaster()
+        {
+            var data = await LoadAsync<DifficultMaster>("DifficultMaster");
+            tables.Add(new DifficultMasterDataTable(data));
+        }
+
+        private async UniTask LoadAsyncByHackMaster()
+        {
+            var data = await LoadAsync<HackMaster>("HackMaster");
+            tables.Add(new HackMasterDataTable(data));
         }
     }
 }
