@@ -12,7 +12,7 @@ namespace App.InGame.Presentation.Props
         [SerializeField] private bool started;
 
         public Vector3 Position => transform.position;
-        
+
         private bool unlocked;
         public bool Unlocked => unlocked || started;
 
