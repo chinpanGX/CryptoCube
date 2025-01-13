@@ -116,8 +116,6 @@ namespace App.InGame.Presentation.HUD
                     .RegisterTo(owner.cancellationTokenSource.Token);
                 
                 owner.Setup();
-
-                owner.preStart.OnNext(Unit.Default);
             }
 
             private void StartHacking(HackingGameApplicationService owner, int shieldWallId)

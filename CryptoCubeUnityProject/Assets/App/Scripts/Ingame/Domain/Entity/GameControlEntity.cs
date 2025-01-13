@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
+using UnityEngine;
 
 namespace App.InGame.Domain
 {

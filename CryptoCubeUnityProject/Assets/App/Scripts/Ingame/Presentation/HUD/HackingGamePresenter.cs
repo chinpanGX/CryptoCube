@@ -76,12 +76,11 @@ namespace App.InGame.Presentation.HUD
             HackingGameView.Request
                 .Subscribe(text => ApplicationService.RequestPassword(text))
                 .RegisterTo(cancellationDisposable.Token);
-
-            ApplicationService.PreStart
-                .Subscribe(_ => { OnStart().Forget(); })
-                .RegisterTo(cancellationDisposable.Token);
+            
             HackingGameView.Setup();
             InGameHudView.Open();
+            
+            OnStart().Forget();
         }
 
         private void StartHacking(string passwordAnswer)

@@ -874,17 +874,17 @@ MonoBehaviour:
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_PointAction: {fileID: -1654692200621890270, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_SubmitAction: {fileID: 392368643174621059, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_CancelAction: {fileID: 7727032971491509709, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_LeftClickAction: {fileID: 3001919216989983466, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_MiddleClickAction: {fileID: -2185481485913320682, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_RightClickAction: {fileID: -4090225696740746782, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: 492e2d1d521fa0b4a947560ba49965c0, type: 3}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: 92f49d4258e272147884eaa607029c7f, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
@@ -2234,50 +2234,6 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 875165695}
-    - target: {fileID: 8586590504094283299, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484577, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.005795988
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484577, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.044570122
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484577, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.72778
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484577, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.6811194
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484577, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.07877457
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484577, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.014394332
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484587, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.9999514
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484587, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484587, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.009860984
-      objectReference: {fileID: 0}
-    - target: {fileID: 8586590504104484587, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
     - target: {fileID: 9002994950156883067, guid: ab9008485c0687c4f9c4adaabd0f9938, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
