@@ -8,10 +8,9 @@ namespace App.InGame.Domain
     public class GameControlEntity
     {
         private readonly ReactiveProperty<int> hackingRemainTime = new();
-        private readonly ReactiveProperty<bool> pausing = new(false);
 
         public ReadOnlyReactiveProperty<int> HackingRemainTime => hackingRemainTime;
-        public ReadOnlyReactiveProperty<bool> Pausing => pausing;
+        public bool Pausing { get; private set; }
 
         public GameControlEntity(int limitTime)
         {
@@ -23,28 +22,19 @@ namespace App.InGame.Domain
             while (hackingRemainTime.Value > 0)
             {
                 if (cancellationToken.IsCancellationRequested)
-                {
                     break;
-                }
-
-                if (pausing.Value)
-                {
-                    await UniTask.Yield(cancellationToken: cancellationToken);
-                }
 
                 await UniTask.Delay(1000, cancellationToken: cancellationToken);
+                while (Pausing)
+                    await UniTask.Yield(cancellationToken: cancellationToken);
+
                 hackingRemainTime.Value--;
             }
         }
-        
-        public void Pause()
+
+        public void OnChangePause()
         {
-            pausing.Value = true;
-        }
-        
-        public void Resume()
-        {
-            pausing.Value = false;
+            Pausing = !Pausing;
         }
     }
 }

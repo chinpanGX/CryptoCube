@@ -72,14 +72,22 @@ namespace App.InGame.Presentation.HUD
                     }
                 )
                 .RegisterTo(cancellationDisposable.Token);
+            
+            ApplicationService.Pausing
+                .Subscribe(pausing =>
+                    {
+                        InGameHudView.OnPauseView(pausing).Forget();
+                    }
+                )
+                .RegisterTo(cancellationDisposable.Token);
 
             HackingGameView.Request
                 .Subscribe(text => ApplicationService.RequestPassword(text))
                 .RegisterTo(cancellationDisposable.Token);
-            
+
             HackingGameView.Setup();
             InGameHudView.Open();
-            
+
             OnStart().Forget();
         }
 
@@ -109,6 +117,9 @@ namespace App.InGame.Presentation.HUD
             var view = await StartView.LoadAsync();
             await view.PlayAsync();
             ApplicationService.GameStart();
+            InGameHudView.OnPushedPause
+                .Subscribe(_ => { ApplicationService.ChangePause(); })
+                .RegisterTo(cancellationDisposable.Token);
         }
     }
 }

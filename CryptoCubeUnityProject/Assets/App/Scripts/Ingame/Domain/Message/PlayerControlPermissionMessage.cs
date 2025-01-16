@@ -9,5 +9,4 @@
             CanControl = canControl;
         }
     }
-
 }
