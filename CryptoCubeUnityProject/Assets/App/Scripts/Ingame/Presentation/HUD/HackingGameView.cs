@@ -13,11 +13,11 @@ namespace App.InGame.Presentation.HUD
         [SerializeField] private TMP_InputField inputField;
 
         private readonly Subject<string> request = new();
-
-        private static ViewScreen ViewScreen => ComponentLocator.Get<ViewScreen>();
+        
         public Observable<string> Request => request;
         public Canvas Canvas => canvas;
-
+        private static ViewScreen ViewScreen => ComponentLocator.Get<ViewScreen>();
+        
         public void Push()
         {
             ViewScreen.Push(this);

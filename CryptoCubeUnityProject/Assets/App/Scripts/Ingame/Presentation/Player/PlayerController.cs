@@ -61,8 +61,15 @@ namespace App.InGame.Presentation.Player
 
         private void Tick()
         {
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                PlayerApplicationService.ChangePause();
+            }
+
             if (PlayerApplicationService.CanControl.CurrentValue)
+            {
                 moveController.Tick();
+            }
         }
 
         private void SetActivateInput(bool canControl)

@@ -29,7 +29,7 @@ namespace App.InGame.Presentation.HUD
         
         public async UniTask PlayAsync()
         {
-            await playableDirector.PlayAsync();
+            await playableDirector.PlayAsync(destroyCancellationToken);
             Pop();
         }
         
