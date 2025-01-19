@@ -1,0 +1,17 @@
+{
+    "name": "App.User.Editor",
+    "rootNamespace": "App.User.Editor",
+    "references": [
+        "GUID:1b265b92762dc24459bc89fcc1fb01d9",
+        "GUID:eebbff8c544c2ba4f887ca9babfbad30"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
