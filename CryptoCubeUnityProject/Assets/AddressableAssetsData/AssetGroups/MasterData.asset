@@ -15,8 +15,40 @@ MonoBehaviour:
   m_GroupName: MasterData
   m_GUID: a8305dae864630f4ba3301bc4c3a5382
   m_SerializeEntries:
+  - m_GUID: 25b3bc8b03b4fc04eb85a82fe8f8fe29
+    m_Address: Assets/MasterData/Resource/SampleCharacter.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MasterData/Resource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31e7afdc526f3ef4990cff36b62a74c4
+    m_Address: Assets/MasterData/Resource/StageMaster.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fcfe2cd7eb257f48a99c15a21671199
     m_Address: MasterData/Resource
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MasterData/Resource
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ad940e7b0b411f49ac3d9868cb5b80e
+    m_Address: Assets/MasterData/Resource/LocalizationMaster.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9118fb03a09574d47b9673b1ec7e5bf4
+    m_Address: Assets/MasterData/Resource/HackMaster.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a418816a3f25d1843867d24e258bd4ed
+    m_Address: Assets/MasterData/Resource/DifficultMaster.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acb8d6b8c5ed1604ea174e7a42120384
+    m_Address: Assets/MasterData/Resource/SampleText.json
     m_ReadOnly: 0
     m_SerializedLabels:
     - MasterData/Resource
